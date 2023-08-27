@@ -816,6 +816,9 @@ func parse_action():
 	var action_name = current_token.value
 	advance()
 	
+	if not expect(scenescript_token.TokenType.COLON): return null
+	advance()
+	
 	if not expect(scenescript_token.TokenType.NEWLINE): return null
 	
 	if peek_next().type != scenescript_token.TokenType.INDENT:

@@ -103,7 +103,9 @@ func save_as_text(nodes : Array[scenescript_node], file_name : String, split_lan
 							line += get_tokens_string((node.param_expressions[j] as scenescript_expression).expression_tokens)
 							if not j == node.param_expressions.size() - 1:
 								line += ", "
-						line += "}\n"
+						line += "}"
+					if not node.params_only:
+						line += "\n"
 				
 				if not node.params_only:
 				
