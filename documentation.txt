@@ -1,0 +1,44 @@
+keywords:
+	var variable_name					- create a variable called variable_name
+	var variable_name = <expression>	- create a variable called variable_name and assign it to <expression>
+	variable_name = <expression>		- assign variable_name to <expression>
+	pos jump_pos_name					- create a jump point at the current index called jump_pos_name
+	goto jump_pos_name					- jump to the index defined by jump_pos_name
+	goto <expression : Number>			- jump to the index defined by <expression>
+	action action_name: <body>			- define an action called action_name
+	do action_name						- execute the action called action_name
+	run <expression : String>			- create a sub process from the file with the file path <expression> and run it
+	if <expression : Bool>: <body>		- execute <body> if <expression> is true
+	loop: <body>						- execute <body> indefinitely
+	loop <expression : Number>: <body>	- execute <body> the number of times defined by <expression>
+	loop <expression : Bool> : <body>	- execute <body> while <expression> is true
+	wait <expression : Number>			- suspend execution for the amount of time defined by <expression>
+	pause								- suspend execution until step() is called again in the process
+	exit								- stop executing and emit 'finished' signal
+	signal <expression>					- emit node_signal with the value defined by <expression>
+	register <expression>				- push the value of <expression> onto the register stack
+	deregister							- pop the last value off the register stack or null
+	scene <var keyword>					- specifie that the following variable should be added to the scene's variables
+	scene variable_name = <expression>	- set the scene variable called variable_name to <expression> 
+	global <var keyword>				- specifie that the following variable should be added to the global's variables
+	global variable_name = <expression>	- set the global variable called variable_name to <expression> 
+	say <expression>					- present <expression> to the output
+	say: <body of expressions>			- present each <expression> in <body of expressions> to the output in sequence
+	choice: <body of sub-bodies>		- present a multi-choice branch to the output, each branch corresponding to a specific sub-body
+	once <keyword>						- specify that the next keyword should only run once
+	@actor_name							- select the actor named actor_name (actor_name can also be a string literal)
+	@actor_name.func_name(<expressions>)- call the function name func_name on the actor named actor name (which can also be a string) and pass it the comma seperated <expressions> values
+	.func_name(<expressions>)			- call the function name func_name on the current selected actor and pass it the comma seperated <expressions> values
+	
+expression:
+	nesting:				( )
+	comparison operators:	< > <= >= != ==
+	logical operators:		not and or
+	math operators:			+ - / * %
+	variable_name			resolves to the value of the variable called variable_name
+	global variable_name	resolves to the value of the global variable called variable_name
+	scene variable_name		resolves to the value of the scene variable called variable_name
+	deregister				pops off the last value on the register stack and resolves to it
+	langref <String>		resolves to the value of the associated string literal with the id of <String> in the loaded langref dictionary
+	@actor_name.value		resolves to the value of the member 'value' on the actor called actor_name
+	_						(underscore) resolves to null
