@@ -2,8 +2,8 @@ keywords:
 	var variable_name					- create a variable called variable_name
 	var variable_name = <expression>	- create a variable called variable_name and assign it to <expression>
 	variable_name = <expression>		- assign variable_name to <expression>
-	pos jump_pos_name					- create a jump point at the current index called jump_pos_name
-	goto jump_pos_name					- jump to the index defined by jump_pos_name
+	id id_name							- label the current index with id_name
+	goto id_name						- jump to the index labeled by id_name
 	goto <expression : Number>			- jump to the index defined by <expression>
 	action action_name: <body>			- define an action called action_name
 	do action_name						- execute the action called action_name

@@ -70,8 +70,8 @@ func parse() -> Array[scenescript_node]:
 			scenescript_token.TokenType.SELECT: #actor selection
 				node = parse_select_actor()
 			scenescript_token.TokenType.ID: #script section id
-				node = parse_id()
-			scenescript_token.TokenType.POS: #jump position
+				node = parse_jump_position()
+			scenescript_token.TokenType.ID: #jump position
 				node = parse_jump_position()
 			scenescript_token.TokenType.GOTO: #jump goto
 				node = parse_goto()
@@ -412,21 +412,8 @@ func parse_select_actor() -> scenescript_node.select_actor:
 	
 	return node
 
-func parse_id() -> scenescript_node.id:
-	if not expect(scenescript_token.TokenType.ID): return null
-	advance()
-	if not expect(scenescript_token.TokenType.IDENTIFIER): return null
-	
-	var node := scenescript_node.id.new()
-	node.id_string = current_token.value
-	
-	advance()
-	if not expect(scenescript_token.TokenType.NEWLINE): return null
-	
-	return node
-
 func parse_jump_position() -> scenescript_node.jump_position:
-	if not expect(scenescript_token.TokenType.POS): return null
+	if not expect(scenescript_token.TokenType.ID): return null
 	advance()
 	if not expect(scenescript_token.TokenType.IDENTIFIER): return null
 	

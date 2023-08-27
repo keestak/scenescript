@@ -135,6 +135,25 @@ func push_register(value):
 func pop_register():
 	return Scenescript.register_stack.pop_back()
 
+func go_to_id(id_name : String):
+	if id_name in constants:
+		current_node_index = constants[id_name] - 1
+	else:
+		make_error("Can't jump to id \"" + id_name + "\" because it doesn't exist.")
+
+func go_to_index(index : int):
+	if index < 0 or index > nodes.size():
+		make_error("Can't jump to index because it's out of bounds.")
+	current_node_index = index - 1
+
+func do_action(action_name : String):
+	if action_name in constants and nodes[constants[action_name]] is scenescript_node.action:
+		var action_node := nodes[constants[action_name]] as scenescript_node.action
+		action_node.return_index = current_node_index
+		current_node_index = constants[action_name]
+	else:
+		make_error("Can't do action \"" + action_name + "\" because it doesn't exist or is not an action.")
+
 func present_dialog(message : String):
 	present_dialog_callback.call(message)
 	end_step = true

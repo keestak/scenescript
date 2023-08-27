@@ -7,7 +7,6 @@ enum NodeType
 	VARIABLE_ASSIGNMENT,
 	ACTOR_FUNCTION,
 	SELECT_ACTOR,
-	ID,
 	JUMP_POSITION,
 	GOTO,
 	IF_CONDITION,
@@ -23,6 +22,7 @@ enum NodeType
 	REGISTER,
 	DEREGISTER,
 	ACTION,
+	RETURN,
 	DO,
 	RUN,
 }
@@ -168,13 +168,6 @@ class actor_function:
 			function_values.push_back(value)
 		
 		actor.callv(function_name, function_values)
-
-class id:
-	extends scenescript_node
-	const name : String = "id"
-	var type := NodeType.ID
-	
-	var id_string : String
 
 class jump_position:
 	extends scenescript_node
@@ -511,7 +504,7 @@ class action:
 class action_return:
 	extends scenescript_node
 	const name : String = "action return"
-	var type := NodeType.ACTION
+	var type := NodeType.RETURN
 	
 	var action_node_index : int
 	

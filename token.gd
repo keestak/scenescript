@@ -36,7 +36,6 @@ enum TokenType
 	#keywords
 	SELECT,
 	ID,
-	POS,
 	GOTO,
 	IF,
 	EXIT,
@@ -114,7 +113,6 @@ const token_names :=\
 	#keywords
 	"select",
 	"id",
-	"pos",
 	"goto",
 	"if",
 	"exit",
@@ -164,7 +162,6 @@ const token_keywords :=\
 {
 	"select" : TokenType.SELECT,
 	"id" : TokenType.ID,
-	"pos" : TokenType.POS,
 	"goto" : TokenType.GOTO,
 	"if" : TokenType.IF,
 	"exit" : TokenType.EXIT,

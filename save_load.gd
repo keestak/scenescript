@@ -74,11 +74,8 @@ func save_as_text(nodes : Array[scenescript_node], file_name : String, split_lan
 						line += ", "
 				line += ")"
 			
-			node.NodeType.ID:
-				line += "id " + node.id_string
-			
 			node.NodeType.JUMP_POSITION:
-				line += "pos " + node.jump_position_name
+				line += "id " + node.jump_position_name
 			
 			node.NodeType.GOTO:
 				if node.expression == null:
@@ -189,7 +186,8 @@ func save_as_text(nodes : Array[scenescript_node], file_name : String, split_lan
 					choice_block_options_queue.push_back(option[0])
 			
 			_:
-				print ("Unsaved node: " + node.name)
+				#print ("Unsaved node: " + node.name)
+				continue
 		
 		line += "\n"
 		
