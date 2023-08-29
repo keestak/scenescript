@@ -9,6 +9,7 @@ var present_dialog_callback : Callable
 var present_choice_callback : Callable
 var get_timer_callback : Callable
 var handle_say_params_callback : Callable
+var finished_callback : Callable
 
 var language_reference_dictionary = {}
 
@@ -33,21 +34,24 @@ var parent_process_names = []
 
 var process_name = ""
 
-func load_file(path : String):
-	print("Scenescript: " + path)
+func load_file(path : String, print_debug_info := false):
+	if print_debug_info:
+		print("Scenescript: " + path)
 	
 	var tokenizer := scenescript_tokenizer.new()
-	tokenizer.print_debug_info = true #temp
+	tokenizer.print_debug_info = print_debug_info
 	tokenizer.source_code = FileAccess.open(path, FileAccess.READ).get_as_text()
 	
-	print("--- tokenize ---\n")
+	if print_debug_info:
+		print("--- tokenize ---\n")
 	var tokens = tokenizer.tokenize()
 	
 	var parser := scenescript_parser.new()
-	parser.print_debug_info = true
+	parser.print_debug_info = print_debug_info
 	parser.tokens = tokens
 	
-	print("\n\n--- parse ---\n\n")
+	if print_debug_info:
+		print("\n\n--- parse ---\n\n")
 	nodes = parser.parse()
 	
 	for jump_name in parser.jump_positions.keys():
@@ -83,6 +87,7 @@ func step():
 		advance()
 		if is_at_end():
 			finished.emit()
+			finished_callback.call()
 			is_running = false
 			current_node_index = 0
 			return
@@ -90,6 +95,7 @@ func step():
 		match current_node.type:
 			scenescript_node.NodeType.EXIT: #terminate process
 				finished.emit()
+				finished_callback.call()
 				is_running = false
 				current_node_index = 0
 				return
