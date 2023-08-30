@@ -127,8 +127,11 @@ func scan() -> scenescript_token:
 		'\\':
 			return make_token(scenescript_token.TokenType.BACKSLASH)
 		_:
-			make_error("Tried to tokenize unknown character: " + c + " at line " + str(current_line) + ".")
-			return null
+			var character_token = make_token(scenescript_token.TokenType.LITERAL)
+			character_token.value = c
+			return character_token
+			#make_error("Tried to tokenize unknown character: " + c + " at line " + str(current_line) + ".")
+			#return null
 	
 	#unreachable
 #	make_error("Reached end of tokenizer.scan() without finding a valid token at line " + str(current_line) + ".")
