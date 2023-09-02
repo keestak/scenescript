@@ -230,7 +230,7 @@ func store_lang_string(literal_string : String) -> String:
 	return literal_hash
 
 func load_langref_text(path : String):
-	var file := FileAccess.open(path, FileAccess.READ)
+	file = FileAccess.open(path, FileAccess.READ)
 	
 	var hash_dictionary := {}
 	
@@ -240,10 +240,10 @@ func load_langref_text(path : String):
 		if line == "": continue
 		
 		var index := 0
-		var hash := ""
+		var hash_value := ""
 		
 		while line[index] != ' ':
-			hash += line[index]
+			hash_value += line[index]
 			index += 1
 		
 		index += 1
@@ -254,6 +254,6 @@ func load_langref_text(path : String):
 			value += line[index]
 			index += 1
 		
-		hash_dictionary[hash] = value
+		hash_dictionary[hash_value] = value
 	
 	return hash_dictionary

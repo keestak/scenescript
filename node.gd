@@ -364,7 +364,7 @@ class choice:
 	const name : String = "choice"
 	var type := NodeType.CHOICE
 	
-	var options := [] #array of arrays; sub arrays are [String (choice text / md5), int, bool (if we use langref or not)]
+	var options := [] #array of arrays; sub arrays are [String (choice text / md5), int (index of choice option block), bool (if we use langref or not)]
 	var end_index : int
 	
 	func run(process : scenescript_process):

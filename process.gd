@@ -34,7 +34,8 @@ var parent_process_names = []
 
 var process_name = ""
 
-func load_file(path : String, print_debug_info := false):
+func load_file(path : String, should_print_debug_info := false):
+	print_debug_info = should_print_debug_info
 	if print_debug_info:
 		print("Scenescript: " + path)
 	
@@ -165,7 +166,16 @@ func present_dialog(message : String):
 	end_step = true
 
 func present_choice(choices : Array):
-	present_choice_callback.call(choices)
+	#present_choice_callback.call(choices)
+	
+	var choice_names = []
+	for choice in choices:
+		if choice[2]:
+			choice_names.push_back(language_reference_dictionary[choice[0]])
+		else:choice_names.push_back(choice[0])
+	
+	present_choice_callback.call(choice_names)
+	
 	end_step = true
 
 func select_choice(choice_index : int):
