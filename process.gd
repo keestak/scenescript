@@ -1,5 +1,5 @@
 class_name scenescript_process
-extends Object
+extends RefCounted
 
 signal node_signal
 signal finished

@@ -1,5 +1,5 @@
 class_name scenescript_token
-extends Object
+extends RefCounted
 
 var type : TokenType
 var value : Variant

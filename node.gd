@@ -1,5 +1,5 @@
 class_name scenescript_node
-extends Object
+extends RefCounted
 
 enum NodeType
 {

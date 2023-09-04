@@ -2,7 +2,7 @@
 #and also can remove a lot of parse_x functions and consolidate them into a single multi purpose function
 
 class_name scenescript_parser
-extends Object
+extends RefCounted
 
 var nodes : Array[scenescript_node]
 var pending_nodes : Array[scenescript_node]

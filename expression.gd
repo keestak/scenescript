@@ -1,5 +1,5 @@
 class_name scenescript_expression
-extends Object
+extends RefCounted
 #
 #enum ExpressionType
 #{

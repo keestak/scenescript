@@ -1,5 +1,5 @@
 class_name scenescript_tokenizer
-extends Object
+extends RefCounted
 
 var print_debug_info = false
 var source_code := ""

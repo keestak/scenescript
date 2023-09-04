@@ -1,5 +1,5 @@
 class_name scenescript_save_load
-extends Object
+extends RefCounted
 
 const truncated_hash_length := 8
 
