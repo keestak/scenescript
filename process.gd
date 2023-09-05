@@ -153,11 +153,13 @@ func go_to_index(index : int):
 		make_error("Can't jump to index because it's out of bounds.")
 	current_node_index = index - 1
 
-func do_action(action_name : String):
+func do_action(action_name : String, run_if_not_running := false):
 	if action_name in constants and nodes[constants[action_name]] is scenescript_node.action:
 		var action_node := nodes[constants[action_name]] as scenescript_node.action
 		action_node.return_index = current_node_index
 		current_node_index = constants[action_name]
+		if run_if_not_running and not is_running:
+			step()
 	else:
 		make_error("Can't do action \"" + action_name + "\" because it doesn't exist or is not an action.")
 
