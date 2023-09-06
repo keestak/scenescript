@@ -249,6 +249,8 @@ func string(enclosed_in_quotes := true) -> scenescript_token:
 					string_value += "\t"
 				"n":
 					string_value += "\n"
+				"r":
+					string_value += "\r"
 				_:
 					make_error("Unknown escape sequence \\" + peek() + " in string at line " + str(starting_line)+ ".")
 					return null
