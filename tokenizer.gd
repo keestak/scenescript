@@ -58,7 +58,7 @@ func scan() -> scenescript_token:
 		return number()
 	
 	if c.is_valid_identifier():
-		if not (c == '_' and peek(0) not in [' ', '\t', '\n']): #special case for single underscore
+		if not (c == '_' and peek(0) in [' ', '\t', '\n']): #special case for single underscore
 			return identifier_or_keyword()
 	
 	match c:

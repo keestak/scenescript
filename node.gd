@@ -120,6 +120,11 @@ class select_actor:
 		if disabled: return
 		has_run = true
 		
+		#deselect actor
+		if actor_name == "":
+			process.deselect_actor()
+			return
+		
 		if not actor_name in Scenescript.scene_actors:
 			process.make_error("Actor named \"" + actor_name + "\" was not in scene actors.")
 			return

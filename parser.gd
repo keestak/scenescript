@@ -319,10 +319,16 @@ func parse_actor_reference():
 	var use_selected_actor := false
 	var actor_name := ""
 	
-	if not current_token.type == scenescript_token.TokenType.DOT:
-	
+	if current_token.type == scenescript_token.TokenType.DOT:
+		use_selected_actor = true
+	else:
 		if not expect(scenescript_token.TokenType.AT): return null
 		advance()
+		
+		if current_token.type == scenescript_token.TokenType.UNDERSCORE:
+			var node := scenescript_node.select_actor.new()
+			node.actor_name = ""
+			return node
 		
 		if current_token.type != scenescript_token.TokenType.IDENTIFIER and current_token.type != scenescript_token.TokenType.LITERAL:
 			make_error("Unexpected token: " + scenescript_token.token_names[current_token.type] + "\n(expected either identifier or literal)")
@@ -334,9 +340,6 @@ func parse_actor_reference():
 			var node := scenescript_node.select_actor.new()
 			node.actor_name = actor_name
 			return node
-	
-	else:
-		use_selected_actor = true
 	
 	#otherwise calling a function on the actor or setting a value
 	if not expect(scenescript_token.TokenType.DOT): return null
@@ -599,8 +602,27 @@ func parse_say() -> scenescript_node.say:
 				var say_block_node := scenescript_node.say.new()
 				if once_enabled: say_block_node.once = true
 				
+				var is_escaping := false
 				while current_token.type != scenescript_token.TokenType.NEWLINE:
-					literal_token.value += str(current_token.value)
+					var token_string = str(current_token.value)
+					if is_escaping:
+						match token_string[0]:
+							"n":
+								literal_token.value += "\n"
+							"t":
+								literal_token.value += "\t"
+							"r":
+								literal_token.value += "\r"
+							"\\":
+								literal_token.value += "\\"
+							_:
+								make_error("Escaping unknown token value \"" + token_string[0] + "\" when parsing say block line.")
+						token_string = token_string.substr(1)
+						is_escaping = false
+					elif token_string == '\\':
+						is_escaping = true
+						token_string = ""
+					literal_token.value += token_string
 					advance()
 				
 				say_block_node.expression = scenescript_expression.new()

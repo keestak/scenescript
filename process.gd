@@ -10,6 +10,7 @@ var present_choice_callback : Callable
 var get_timer_callback : Callable
 var handle_say_params_callback : Callable
 var finished_callback : Callable
+var deselect_actor_callback : Callable
 
 var language_reference_dictionary = {}
 
@@ -185,6 +186,10 @@ func select_choice(choice_index : int):
 		sub_process.select_choice(choice_index)
 		return
 	current_node_index = (current_node as scenescript_node.choice).options[choice_index][1]
+
+func deselect_actor():
+	selected_actor = null
+	deselect_actor_callback.call()
 
 func make_error(message : String):
 	has_process_error = true
