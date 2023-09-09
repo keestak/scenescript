@@ -124,12 +124,17 @@ class select_actor:
 		if actor_name == "":
 			process.deselect_actor()
 			return
+			
+		var actor : scenescript_actor = null
 		
-		if not actor_name in Scenescript.scene_actors:
-			process.make_error("Actor named \"" + actor_name + "\" was not in scene actors.")
+		if actor_name in Scenescript.global_actors: #global actors will shadow scene actors of the same name
+			actor = Scenescript.global_actors[actor_name]
+		elif actor_name in Scenescript.scene_actors:
+			actor = Scenescript.scene_actors[actor_name]
+		else:
+			process.make_error("Actor named \"" + actor_name + "\" was not in global or scene actors.")
 			return
 		
-		var actor : scenescript_actor = Scenescript.scene_actors[actor_name]
 		process.selected_actor = actor
 		actor.select(process)
 
