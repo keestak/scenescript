@@ -20,7 +20,7 @@ var current_node : scenescript_node
 
 var variables := {}
 var constants := {}
-var selected_actor : scenescript_actor = null
+var selected_actor = null
 
 var is_running := false
 var end_step := false

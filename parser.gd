@@ -605,6 +605,7 @@ func parse_say() -> scenescript_node.say:
 				var is_escaping := false
 				while current_token.type != scenescript_token.TokenType.NEWLINE:
 					var token_string = str(current_token.value)
+						
 					if is_escaping:
 						match token_string[0]:
 							"n":
@@ -622,6 +623,13 @@ func parse_say() -> scenescript_node.say:
 					elif token_string == '\\':
 						is_escaping = true
 						token_string = ""
+					
+					#we need to add the quotes back in
+					#TODO: doing it this way means that the literals a and "a" will be indistinguishable, and "a" will be shown without quotes.
+					#so we need to fix that... somehow. my best guess is to use a new "CHARACTER_LITERAL" token for single characters to fix this issue?
+					if current_token.type == scenescript_token.TokenType.LITERAL and token_string.length() > 1:
+						token_string = '"' + token_string + '"'
+					
 					literal_token.value += token_string
 					advance()
 				

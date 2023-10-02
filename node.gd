@@ -79,7 +79,7 @@ class variable_assignment:
 				
 			Scenescript.scene_vars[variable_identifier] = value
 		elif is_actor_variable:
-			var actor : scenescript_actor
+			var actor
 			
 			if use_selected_actor:
 				if process.selected_actor == null:
@@ -87,12 +87,15 @@ class variable_assignment:
 					return
 				actor = process.selected_actor
 				
-			elif destination_name not in Scenescript.scene_actors:
-				process.make_error("Tried to assign a value onto a nonexistant actor: " + destination_name)
-				return
+			elif destination_name in Scenescript.scene_actors:
+				actor = Scenescript.scene_actors[destination_name]
+				
+			elif destination_name in Scenescript.global_actors:
+				actor = Scenescript.global_actors[destination_name]
 				
 			else:
-				actor = Scenescript.scene_actors[destination_name]
+				process.make_error("Tried to assign a value onto a nonexistant actor: " + destination_name)
+				return
 			
 			if variable_identifier not in actor:
 				process.make_error("Variable name \"" + variable_identifier + "\" does not exist in actor: " + destination_name)
@@ -125,7 +128,7 @@ class select_actor:
 			process.deselect_actor()
 			return
 			
-		var actor : scenescript_actor = null
+		var actor = null
 		
 		if actor_name in Scenescript.global_actors: #global actors will shadow scene actors of the same name
 			actor = Scenescript.global_actors[actor_name]
@@ -159,11 +162,15 @@ class actor_function:
 			
 			actor_name = process.selected_actor.actor_name
 		
-		if not actor_name in Scenescript.scene_actors:
+		var actor = null
+		
+		if actor_name in Scenescript.global_actors:
+			actor = Scenescript.global_actors[actor_name]
+		elif actor_name in Scenescript.scene_actors:
+			actor = Scenescript.scene_actors[actor_name]
+		else:
 			process.make_error("Actor named \"" + actor_name + "\" was not in scene actors.")
 			return
-		
-		var actor : scenescript_actor = Scenescript.scene_actors[actor_name]
 		
 		if not function_name in actor:
 			process.make_error("Actor named \"" + actor_name + "\" does not have function \"" + function_name + "\".")
