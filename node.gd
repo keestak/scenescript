@@ -70,14 +70,32 @@ class variable_assignment:
 			if variable_identifier not in Scenescript.global_vars:
 				process.make_error("Tried to assign a nonexistant global variable: " + variable_identifier)
 				return
-				
+			
+			#if 'once' and part of a global / scene variable declaration and assignment line (the previous node being the declaration), then we don't want to re-assign the global/scene variable
+			if once and index > 0\
+			and process.nodes[index - 1] is variable\
+			and (process.nodes[index - 1] as variable).redeclared_variable\
+			and (process.nodes[index - 1] as variable).once\
+			and (process.nodes[index - 1] as variable).destination_name == "global"\
+			and (process.nodes[index - 1] as variable).variable_name == variable_identifier:
+				return
 			Scenescript.global_vars[variable_identifier] = value
+			
 		elif destination_name == "scene":
 			if variable_identifier not in Scenescript.scene_vars:
 				process.make_error("Tried to assign a nonexistant scene variable: " + variable_identifier)
 				return
-				
+			
+			#if 'once' and part of a global / scene variable declaration and assignment line (the previous node being the declaration), then we don't want to re-assign the global/scene variable
+			if once and index > 0\
+			and process.nodes[index - 1] is variable\
+			and (process.nodes[index - 1] as variable).redeclared_variable\
+			and (process.nodes[index - 1] as variable).once\
+			and (process.nodes[index - 1] as variable).destination_name == "scene"\
+			and (process.nodes[index - 1] as variable).variable_name == variable_identifier:
+				return
 			Scenescript.scene_vars[variable_identifier] = value
+			
 		elif is_actor_variable:
 			var actor
 			
@@ -257,7 +275,8 @@ class variable:
 	extends scenescript_node
 	const name : String = "variable"
 	var type := NodeType.VARIABLE
-	var ignore_existing_variable_conflict = false
+	var ignore_existing_variable_conflict = true #if this is true, we can redeclare variables
+	var redeclared_variable := false
 	
 	var variable_name : String
 	var destination_name : String #empty for normal variables; 'global' or 'scene' puts them into respective special dictionaries
@@ -267,19 +286,34 @@ class variable:
 		has_run = true
 		
 		if destination_name == "global":
-			if (variable_name in Scenescript.global_vars and not ignore_existing_variable_conflict):
-				process.make_error("Tried to re-initialize an already existing global variable: " + variable_name)
-				return
+			if variable_name in Scenescript.global_vars:
+				if not ignore_existing_variable_conflict:
+					process.make_error("Tried to re-initialize an already existing global variable: " + variable_name)
+					return
+				redeclared_variable = true
+				if once: return #don't change the value of the existing variable
+				
 			Scenescript.global_vars[variable_name] = null
+			
 		elif  destination_name == "scene":
-			if (variable_name in Scenescript.scene_vars and not ignore_existing_variable_conflict):
-				process.make_error("Tried to re-initialize an already existing scene variable: " + variable_name)
-				return
+			if variable_name in Scenescript.scene_vars:
+				if not ignore_existing_variable_conflict:
+					process.make_error("Tried to re-initialize an already existing scene variable: " + variable_name)
+					return
+				redeclared_variable = true
+				if once: return #don't change the value of the existing variable
+			
 			Scenescript.scene_vars[variable_name] = null
-		else:
-			if (variable_name in process.variables and not ignore_existing_variable_conflict) or variable_name in process.constants:
-				process.make_error("Tried to re-initialize an already existing variable: " + variable_name)
+			
+		elif variable_name in process.constants:
+				process.make_error("Tried to set the value of a constant: " + variable_name)
 				return
+		else:
+			if variable_name in process.variables:
+				if not ignore_existing_variable_conflict:
+					process.make_error("Tried to re-initialize an already existing variable: " + variable_name)
+					return
+				redeclared_variable = true
 			process.variables[variable_name] = null
 
 class say:

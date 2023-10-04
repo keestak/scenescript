@@ -7,12 +7,12 @@ extends Node
 func _ready():
 	if actor_name != "":
 		if is_global_actor:
-			if actor_name in Scenescript.global_actors:
+			if actor_name in Scenescript.global_actors and  is_instance_valid(Scenescript.global_actors[actor_name]):
 				push_error("An actor by the name of \"" + actor_name + "\" was already in the global actors.")
 				return
 			Scenescript.global_actors[actor_name] = self
 		else:
-			if actor_name in Scenescript.scene_actors:
+			if actor_name in Scenescript.scene_actors and is_instance_valid(Scenescript.scene_actors[actor_name]):
 				push_error("An actor by the name of \"" + actor_name + "\" was already in the scene actors.")
 				return
 			Scenescript.scene_actors[actor_name] = self
