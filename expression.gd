@@ -234,6 +234,11 @@ func evaluate(process : scenescript_process = null):
 			var r = stack.pop_back()
 			var l = stack.pop_back()
 			
+			if typeof(l) == TYPE_INT:
+				l = float(l)
+			if typeof(r) == TYPE_INT:
+				r = float(r)
+			
 			match token.type:
 				#numeric
 				scenescript_token.TokenType.PLUS: #string
@@ -263,32 +268,32 @@ func evaluate(process : scenescript_process = null):
 				#logical
 				scenescript_token.TokenType.AND:
 					if not check_type(l, r, TYPE_BOOL):
-						make_error(str(l) + " or " + str(r) + " is non-boolean.")
+						make_error("Either " + str(l) + " or " + str(r) + " is non-boolean.")
 						return null
 					stack.push_back(l and r)
 				scenescript_token.TokenType.OR:
 					if not check_type(l, r, TYPE_BOOL):
-						make_error(str(l) + " or " + str(r) + " is non-boolean.")
+						make_error("Either " + str(l) + " or " + str(r) + " is non-boolean.")
 						return null
 					stack.push_back(l or r)
 				scenescript_token.TokenType.GREATER:
 					if not check_type(l, r, TYPE_FLOAT):
-						make_error(str(l) + " or " + str(r) + " is not a number.")
+						make_error("Either " + str(l) + " or " + str(r) + " is not a number.")
 						return null
 					stack.push_back(l > r)
 				scenescript_token.TokenType.GREATER_EQUAL:
 					if not check_type(l, r, TYPE_FLOAT):
-						make_error(str(l) + " or " + str(r) + " is not a number.")
+						make_error("Either " + str(l) + " or " + str(r) + " is not a number.")
 						return null
 					stack.push_back(l >= r)
 				scenescript_token.TokenType.LESS:
 					if not check_type(l, r, TYPE_FLOAT):
-						make_error(str(l) + " or " + str(r) + " is not a number.")
+						make_error("Either " + str(l) + " or " + str(r) + " is not a number.")
 						return null
 					stack.push_back(l < r)
 				scenescript_token.TokenType.LESS_EQUAL:
 					if not check_type(l, r, TYPE_FLOAT):
-						make_error(str(l) + " or " + str(r) + " is not a number.")
+						make_error("Either " + str(l) + " or " + str(r) + " is not a number.")
 						return null
 					stack.push_back(l <= r)
 				scenescript_token.TokenType.DOUBLE_EQUAL:
