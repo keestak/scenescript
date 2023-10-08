@@ -25,12 +25,13 @@ func tokenize() -> Array[scenescript_token]:
 	
 	while true:
 		var token = scan()
+		if has_token_error: break
+		if token == null: continue
 		if print_debug_info:
 			print(str(tokens.size()).rpad(5) + " " + scenescript_token.token_names[token.type] + ("" if (token.value is String and token.value == scenescript_token.token_names[token.type]) else " (" + str(token.value) + ")"))
 		tokens.append(token)
 		last_token = token
 		if token.type == scenescript_token.TokenType.END_OF_FILE: break
-		if has_token_error: break
 	
 	return tokens
 
@@ -126,6 +127,12 @@ func scan() -> scenescript_token:
 			return make_token(scenescript_token.TokenType.UNDERSCORE)
 		'\\':
 			return make_token(scenescript_token.TokenType.BACKSLASH)
+		'\r':
+			if peek(0) == "\n": #special case for CRLF line endings
+				return null
+			else:
+				make_error("Illegal character during tokenization: carrage return.")
+			return null
 		_:
 			var character_token = make_token(scenescript_token.TokenType.LITERAL)
 			character_token.value = c
@@ -181,9 +188,12 @@ func skip_white_space():
 				indent_level = num_indents
 				pending_tokens.append(make_token(scenescript_token.TokenType.INDENT))
 		elif is_say_block:
-			var space_literal = make_token(scenescript_token.TokenType.LITERAL)
-			space_literal.value = peek()
-			pending_tokens.append(space_literal)
+			if peek() == '\r' and peek(0) == '\n':
+				pass #special case for CRLF line endings
+			else:
+				var space_literal = make_token(scenescript_token.TokenType.LITERAL)
+				space_literal.value = peek()
+				pending_tokens.append(space_literal)
 		advance()
 
 	if last_token != null and last_token.type == scenescript_token.TokenType.NEWLINE:

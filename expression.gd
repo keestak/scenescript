@@ -176,11 +176,16 @@ func evaluate(process : scenescript_process = null):
 			
 			var actor_name := str(token.value)
 			
-			if token.value not in Scenescript.scene_actors:
-				make_error("Actor name \"" + actor_name + "\" was not in scene actors.")
-				return null
+			var actor : scenescript_actor
 			
-			var actor : scenescript_actor = Scenescript.scene_actors[actor_name]
+			if token.value in Scenescript.scene_actors:
+				actor = Scenescript.scene_actors[actor_name]
+				
+			elif token.value in Scenescript.global_actors:
+				actor = Scenescript.global_actors[actor_name]
+				
+			else:
+				make_error("Actor name \"" + actor_name + "\" was not in global or scene actors.")
 			
 			token = output.pop_front() #move to dot
 			if token.type != scenescript_token.TokenType.DOT:
@@ -195,7 +200,7 @@ func evaluate(process : scenescript_process = null):
 			var member_name = token.value
 			
 			if not token.value in actor:
-				make_error("Member name \"" + member_name + "was not in actor \"" + actor_name + "\".")
+				make_error("Member name \"" + member_name + " was not in actor \"" + actor_name + "\".")
 				return null
 			
 			stack.push_back(actor.get(member_name))
