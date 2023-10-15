@@ -176,7 +176,7 @@ func evaluate(process : scenescript_process = null):
 			
 			var actor_name := str(token.value)
 			
-			var actor : scenescript_actor
+			var actor : Variant
 			
 			if token.value in Scenescript.scene_actors:
 				actor = Scenescript.scene_actors[actor_name]

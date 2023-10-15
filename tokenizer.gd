@@ -287,10 +287,10 @@ func string(enclosed_in_quotes := true) -> scenescript_token:
 func identifier_or_keyword() -> scenescript_token:
 	var word := ""
 	while(true):
-		if is_at_end() or not peek().is_valid_identifier():
+		if is_at_end() or (not peek().is_valid_identifier() and not (peek().is_valid_int() and word.length() > 0)):
 			break
 		word += peek()
-		if peek(0).is_valid_identifier():
+		if peek(0).is_valid_identifier() or peek(0).is_valid_int():
 			advance()
 		else: break
 	
