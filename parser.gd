@@ -253,7 +253,7 @@ func parse_expression() -> Array[scenescript_token]:
 			#comparison
 			scenescript_token.TokenType.LESS:
 				expression_tokens.push_back(current_token)
-			scenescript_token.TokenType.LESS:
+			scenescript_token.TokenType.LESS_EQUAL:
 				expression_tokens.push_back(current_token)
 			scenescript_token.TokenType.GREATER:
 				expression_tokens.push_back(current_token)
