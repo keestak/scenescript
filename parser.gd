@@ -591,47 +591,56 @@ func parse_say() -> scenescript_node.say:
 						return null
 					param_expressions = parse_say_param_expressions()
 				
+				#======= OLD CODE FOR WHEN SAY BLOCK TEXT WAS ALL TOKENS INSTEAD OF SINGLE LITERAL (GROSS)
 				#we need to put all the next tokens up to the newline into a string literal token, and use that as our expression tokens
-				if current_token.type == scenescript_token.TokenType.LITERAL and current_token.value in [' ', '\t', '\r']:
-					advance()
+#				if current_token.type == scenescript_token.TokenType.LITERAL and current_token.value in [' ', '\t', '\r']:
+#					advance()
+#
+#				var literal_token := scenescript_token.new()
+#				literal_token.type = scenescript_token.TokenType.LITERAL
+#				literal_token.value = ""
+#
+#				var say_block_node := scenescript_node.say.new()
+#				if once_enabled: say_block_node.once = true
+#
+#				var is_escaping := false
+#				while current_token.type != scenescript_token.TokenType.NEWLINE:
+#					var token_string = str(current_token.value)
+#
+#					if is_escaping:
+#						match token_string[0]:
+#							"n":
+#								literal_token.value += "\n"
+#							"t":
+#								literal_token.value += "\t"
+#							"r":
+#								literal_token.value += "\r"
+#							"\\":
+#								literal_token.value += "\\"
+#							_:
+#								make_error("Escaping unknown token value \"" + token_string[0] + "\" when parsing say block line.")
+#						token_string = token_string.substr(1)
+#						is_escaping = false
+#					elif token_string == '\\':
+#						is_escaping = true
+#						token_string = ""
+#
+#					#we need to add the quotes back in
+#					#TODO: doing it this way means that the literals a and "a" will be indistinguishable, and "a" will be shown without quotes.
+#					#so we need to fix that... somehow. my best guess is to use a new "CHARACTER_LITERAL" token for single characters to fix this issue?
+#					if current_token.type == scenescript_token.TokenType.LITERAL and token_string.length() > 1:
+#						token_string = '"' + token_string + '"'
+#
+#					literal_token.value += token_string
+#					advance()
+				#=======
 				
-				var literal_token := scenescript_token.new()
-				literal_token.type = scenescript_token.TokenType.LITERAL
-				literal_token.value = ""
+				if not expect(scenescript_token.TokenType.LITERAL): return null
 				
+				var literal_token := current_token
+
 				var say_block_node := scenescript_node.say.new()
 				if once_enabled: say_block_node.once = true
-				
-				var is_escaping := false
-				while current_token.type != scenescript_token.TokenType.NEWLINE:
-					var token_string = str(current_token.value)
-						
-					if is_escaping:
-						match token_string[0]:
-							"n":
-								literal_token.value += "\n"
-							"t":
-								literal_token.value += "\t"
-							"r":
-								literal_token.value += "\r"
-							"\\":
-								literal_token.value += "\\"
-							_:
-								make_error("Escaping unknown token value \"" + token_string[0] + "\" when parsing say block line.")
-						token_string = token_string.substr(1)
-						is_escaping = false
-					elif token_string == '\\':
-						is_escaping = true
-						token_string = ""
-					
-					#we need to add the quotes back in
-					#TODO: doing it this way means that the literals a and "a" will be indistinguishable, and "a" will be shown without quotes.
-					#so we need to fix that... somehow. my best guess is to use a new "CHARACTER_LITERAL" token for single characters to fix this issue?
-					if current_token.type == scenescript_token.TokenType.LITERAL and token_string.length() > 1:
-						token_string = '"' + token_string + '"'
-					
-					literal_token.value += token_string
-					advance()
 				
 				say_block_node.expression = scenescript_expression.new()
 				say_block_node.expression.expression_tokens = [literal_token]
@@ -639,6 +648,7 @@ func parse_say() -> scenescript_node.say:
 					say_block_node.param_expressions = param_expressions
 				
 				pending_nodes.append(say_block_node)
+				advance()
 				if not expect(scenescript_token.TokenType.NEWLINE): return null
 				advance()
 				

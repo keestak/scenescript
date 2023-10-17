@@ -10,6 +10,7 @@ var indent_level := 0
 var pending_tokens : Array[scenescript_token] = []
 var last_token : scenescript_token = null
 var is_say_block := false
+var is_say_block_params := false
 
 var has_token_error := false
 var token_error_string := ""
@@ -46,11 +47,15 @@ func scan() -> scenescript_token:
 		retreat()
 		return pending_tokens.pop_front()
 	
+	c = peek()
+	
 	if is_say_block:
 		if last_token.type == scenescript_token.TokenType.DEDENT:
 			is_say_block = false
-	
-	c = peek()
+		elif not is_say_block_params and c not in ['\n', '\r', '\t']:
+			if not ((last_token.type == scenescript_token.TokenType.INDENT or last_token.type == scenescript_token.TokenType.NEWLINE) and peek() == '{'):
+				#read rest of line as string
+				return string(false)
 	
 	if is_at_end():
 		return make_token(scenescript_token.TokenType.END_OF_FILE)
@@ -112,8 +117,12 @@ func scan() -> scenescript_token:
 		']':
 			return make_token(scenescript_token.TokenType.BRACKET_CLOSE)
 		'{':
+			if is_say_block:
+				is_say_block_params = true
 			return make_token(scenescript_token.TokenType.BRACE_OPEN)
 		'}':
+			if is_say_block_params:
+				is_say_block_params = false
 			return make_token(scenescript_token.TokenType.BRACE_CLOSE)
 		':':
 			if last_token.type == scenescript_token.TokenType.SAY:
@@ -267,12 +276,12 @@ func string(enclosed_in_quotes := true) -> scenescript_token:
 			advance() #consume escaped character
 			continue
 		
-		if (enclosed_in_quotes and peek() == '"') or (not enclosed_in_quotes and peek() == '\n'):
+		if (enclosed_in_quotes and peek() == '"') or (not enclosed_in_quotes and peek() in ['\n', '\r']):
 			break
 		if is_at_end():
 			make_error("Reached end of file when reading string that begins at line " + str(starting_line)+ ".")
 			return null
-		
+
 		string_value += peek()
 		advance()
 	
