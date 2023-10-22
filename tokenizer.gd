@@ -196,13 +196,6 @@ func skip_white_space():
 			if num_indents > indent_level:
 				indent_level = num_indents
 				pending_tokens.append(make_token(scenescript_token.TokenType.INDENT))
-		elif is_say_block:
-			if peek() == '\r' and peek(0) == '\n':
-				pass #special case for CRLF line endings
-			else:
-				var space_literal = make_token(scenescript_token.TokenType.LITERAL)
-				space_literal.value = peek()
-				pending_tokens.append(space_literal)
 		advance()
 
 	if last_token != null and last_token.type == scenescript_token.TokenType.NEWLINE:
